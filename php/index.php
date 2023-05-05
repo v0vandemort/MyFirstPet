@@ -1,3 +1,6 @@
 <?php
-echo 'Привет ' . htmlspecialchars($_GET["name"]) . '!';
+
+//Task_8
+
+
 ?>
