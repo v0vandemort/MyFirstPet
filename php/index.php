@@ -1,24 +1,38 @@
 <?php
 
-$input_file=file_get_contents('./INPUT.txt');
-$salaries=explode(" ",$input_file);
+$input_file = file_get_contents("./INPUT.txt");
 
-$n=count($salaries);
-$max_sal=$salaries[0];
-$min_sal=$salaries[0];
 
-$i=0;
+$number_n = (int)$input_file;
 
-for(;!($i==$n);$i++){
-    if ($max_sal<$salaries[$i]){
-        $max_sal=$salaries[$i];
+
+function count_fact($l, $m)
+{
+    if ($l > $m) {
+        return "1";
     };
-    if ($min_sal>$salaries[$i]){
-        $min_sal=$salaries[$i];
+    if ($l == $m) {
+        return $l;
     };
+    if ($m - $l == 1) {
+        return $m * $l;
+    } else {
+        $j = intdiv($l + $m, 2);
+        $a1 = count_fact($l, $j);
+        $a2 = count_fact($j + 1, $m);
+        return $a1 * $a2;
+    }
 }
-$delta=$max_sal-$min_sal;
 
-echo ($delta);
+if ($number_n >= 0) {
+    if ($number_n >= 1000) {
+        echo 'N - is more than 1000 or equal';
+    } else {
+        $factorial = count_fact(2, $number_n);
+        $output_file = file_put_contents("./output.txt", "$factorial");
+    }
+} else {
+    echo 'N - is less than ZERO';
+}
 
 ?>
