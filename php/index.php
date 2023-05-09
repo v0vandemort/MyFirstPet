@@ -1,45 +1,41 @@
 <?php
 
-$input_file = file_get_contents('./INPUT.txt');
-$abc = explode(" ", $input_file); //array of
-$def = explode(" ", "+ + +"); //array of +/-
+session_start();
+if ($_SESSION['message']) {
+    echo $_SESSION['message'];
+    unset($_SESSION['message']);
+}
 
-$abc[-2] = 0;
-$abc[-1] = 0;
-
-$xy[0] = "";
-$xy[1] = "x";
-$xy[2] = "y";
-
-
-for ($i = 0; $i <= 2; $i++) {
-    if ($abc[$i] == 0) {
-        $def[$i] = "";
-        $xy[$i] = "";
-        $abc[$i] = "";
-    };
-
-    if (($abc[$i] > 0) & (($abc[$i - 2] == 0) & ($abc[$i - 1] == 0))) {
-        $def[$i] = "";
-    };
-    if ($abc[$i] < 0) {
-        $def[$i] = "-";
-        $abc[$i] = abs($abc[$i]);
-
-    };
-    if ((abs($abc[$i]) == 1) & ($i > 0)) {
-        $abc[$i] = "";
-
-    };
-
-};
-
-$equation = $def[0] . $abc[0] . $def[1] . $abc[1] . $xy[1] . $def[2] . $abc[2] . $xy[2];
-
-if (($abc[0] == $abc[1]) & ($abc[1] == $abc[2]) & ($abc[2] == 0)) {
-    $equation = "0";
-};
-
-echo $equation;
 
 ?>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Document</title>
+</head>
+<body>
+
+
+<form action="Login.php" method="post">
+    <label>Login</label>
+    <input name="user-name" type="text">
+    <label>Password</label>
+    <input name="Password" type="password">
+    <button type="submit">Enter to site</button>
+    <?php
+
+
+    if ($_COOKIE["Auth_cookie"] === "logged") {
+        header("Location: /Personal_account.php");
+    }
+
+
+    ?>
+
+
+</form>
+
+
+</body>
+</html>
