@@ -25,13 +25,10 @@ for ($i = 0; $i <= 2; $i++) {
     if ($abc[$i] < 0) {
         $def[$i] = "-";
         $abc[$i] = abs($abc[$i]);
-
     };
     if ((abs($abc[$i]) == 1) & ($i > 0)) {
         $abc[$i] = "";
-
     };
-
 };
 
 $equation = $def[0] . $abc[0] . $def[1] . $abc[1] . $xy[1] . $def[2] . $abc[2] . $xy[2];
