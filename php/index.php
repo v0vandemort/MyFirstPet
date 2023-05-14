@@ -1,41 +1,16 @@
 <?php
 
-session_start();
-if ($_SESSION['message']) {
-    echo $_SESSION['message'];
-    unset($_SESSION['message']);
-}
+$fileInput = file_get_contents('./INPUT.txt');
+
+$fileString = explode(" ", $fileInput);
 
 
-?>
-
-<!doctype html>
-<html lang="en">
-<head>
-    <title>Document</title>
-</head>
-<body>
-
-
-<form action="Login.php" method="post">
-    <label>Login</label>
-    <input name="user-name" type="text">
-    <label>Password</label>
-    <input name="Password" type="password">
-    <button type="submit">Enter to site</button>
-    <?php
-
-
-    if ($_COOKIE["Auth_cookie"] === "logged") {
-        header("Location: /Personal_account.php");
-    }
-
-
-    ?>
-
-
-</form>
-
-
-</body>
-</html>
+$arrayLength = count($fileString);
+$exitData = "";
+for ($i = 0; $i + 1 <= $arrayLength; $i++) {
+    if (mb_strlen($fileString[$i]) > 7) {
+        $fileString[$i] = mb_strimwidth($fileString[$i], 0, 7, "*");
+    };
+    $exitData .= $fileString[$i]." ";
+};
+echo $exitData;
