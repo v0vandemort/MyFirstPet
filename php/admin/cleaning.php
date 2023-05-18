@@ -1,7 +1,9 @@
 <?php
+
 session_start();
 
-setcookie('Auth_cookie', "", time() - 3600, "/");
+setcookie('authCookie', "", time() - 3600, "/");
+$_SESSION = [];
 session_destroy();
-header('Location: /index.php');
+header('Location: ../index.php');
 ?>

@@ -1,12 +1,13 @@
 <?php
 
 session_start();
-if (!isset($_COOKIE["Auth_cookie"])) {
+if (!isset($_COOKIE["authCookie"])) {
     header('Location: /index.php');
 } else {
     echo "Logged";
 };
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -16,20 +17,16 @@ if (!isset($_COOKIE["Auth_cookie"])) {
 </head>
 <body>
 
-
 <?php
-
 if ($_SESSION['message']) {
-    echo "<br>".$_SESSION['message'] . "<br>";
+    echo "<br>" . $_SESSION['message'] . "<br>";
     unset($_SESSION['message']);
 };
-
 ?>
 
 <form action="Logout.php">
     <button type="submit">LogOut</button>
 </form>
-
 
 </body>
 </html>

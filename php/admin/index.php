@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-if (!isset($_COOKIE["Auth_cookie"])) {
+if (!isset($_COOKIE["authCookie"])) {
     header('Location: ../index.php');
 } else {
     echo '<h1 class="text-center">Admin logged</h1><br>';
@@ -17,38 +17,51 @@ if (!isset($_COOKIE["Auth_cookie"])) {
 </head>
 <body>
 
-<?php
-
-
-var_dump($_SESSION);
-
-
-?>
 <div class="container">
     <div class="row">
-        <div class="col">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Session name</th>
+                <th scope="col">Session ID</th>
+            </tr>
+            </thead>
+            <tbody>
             <?php
-
-
-            echo session_name();
-
+            while ($currentSession = current($_SESSION)) {
+                echo '<tr><td>' . key($_SESSION) . '</td>';
+                echo '<td>' . $currentSession . '</td></tr>';
+                $currentSession = next($_SESSION);
+            }
 
             ?>
-        </div>
-        <div class="col">
+            <tr>
+                <td><?php
+                    echo session_name(); ?></td>
+                <td><?php
+                    echo session_id(); ?></td>
+            </tr>
+            <thead>
+            <tr>
+                <th scope="col">Cookie name</th>
+                <th scope="col">Cookie data</th>
+            </tr>
+            </thead>
             <?php
-
-
-            echo session_id();
-
+            while ($currentCookie = current($_COOKIE)) {
+                echo '<tr><td>' . key($_COOKIE) . '</td>';
+                echo '<td>' . $currentCookie . '</td></tr>';
+                $currentCookie = next($_COOKIE);
+            }
             ?>
-        </div>
+
+            </tbody>
+        </table>
     </div>
 
     <form action="cleaning.php">
         <button type="submit">Clean all sessions and cookies</button>
     </form>
-
 
 </body>
 </html>

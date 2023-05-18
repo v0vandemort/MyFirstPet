@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-if ($_COOKIE["Auth_cookie"] === "logged") {
+if ($_COOKIE["authCookie"] === "logged") {
     header("Location: /Personal_account.php");
 }
 ?>
@@ -14,7 +14,6 @@ if ($_COOKIE["Auth_cookie"] === "logged") {
 </head>
 <body>
 
-
 <form action="Login.php" method="post">
     <label>Login</label>
     <input name="user-name" type="text">
@@ -26,12 +25,8 @@ if ($_COOKIE["Auth_cookie"] === "logged") {
         echo $_SESSION['message'];
         unset($_SESSION['message']);
     }
-
-
     ?>
-
 </form>
-
 
 </body>
 </html>
