@@ -30,13 +30,13 @@ if (!isset($_COOKIE["authCookie"])) {
             </thead>
             <tbody>
             <?php
-            while (($currentData = current($_SERVER))) {
+            while (($CurrentData = current($_SERVER))) {
                 echo '<tr><td>' . key($_SERVER) . '</td>';
-                echo '<td>' . $currentData . '</td></tr>';
-                $currentData = next($_SERVER);
+                echo '<td>' . $CurrentData . '</td></tr>';
+                $CurrentData = next($_SERVER);
                 echo '<tr><td>' . key($_SERVER) . '</td>';
-                echo '<td>' . $currentData . '</td></tr>';
-                $currentData = next($_SERVER);
+                echo '<td>' . $CurrentData . '</td></tr>';
+                $CurrentData = next($_SERVER);
             }
             ?>
             </tbody>
