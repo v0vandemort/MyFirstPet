@@ -6,7 +6,6 @@ if ($_SESSION['message']) {
     unset($_SESSION['message']);
 }
 
-
 ?>
 
 <!doctype html>
@@ -25,17 +24,13 @@ if ($_SESSION['message']) {
     <button type="submit">Enter to site</button>
     <?php
 
-
     if ($_COOKIE["Auth_cookie"] === "logged") {
         header("Location: /Personal_account.php");
     }
 
-
     ?>
 
-
 </form>
-
 
 </body>
 </html>

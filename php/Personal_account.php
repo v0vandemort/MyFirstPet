@@ -19,11 +19,9 @@ if ($_COOKIE["Auth_cookie"]) {
 </head>
 <body>
 
-
 <form action="Logout.php">
     <button type="submit">Logout</button>
-    <!--    -->
-
 </form>
+
 </body>
 </html>

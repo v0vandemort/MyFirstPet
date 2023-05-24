@@ -2,20 +2,20 @@
 
 session_start();
 
-$login = "admin";
-$password = "12345";
-$user_name = "Нет логина";
-$user_password = "Нет пароля";
+$Login = "admin";
+$Password = "12345";
+$UserName = "Нет логина";
+$UserPassword = "Нет пароля";
 
 
 if (isset($_POST["user-name"])) {
-    $user_name = $_POST["user-name"];
+    $UserName = $_POST["user-name"];
 };
 if (isset($_POST["Password"])) {
-    $user_password = $_POST["Password"];
+    $UserPassword = $_POST["Password"];
 };
 
-if (($login === $user_name) & ($password === $user_password)) {
+if (($Login === $UserName) & ($Password === $UserPassword)) {
     setcookie('Auth_cookie', 'logged', 0, '/');
     $_SESSION["message"] = 'Логин и пароль  верны';
     header('Location: /Personal_account.php');
