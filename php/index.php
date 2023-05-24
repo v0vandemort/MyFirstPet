@@ -1,7 +1,7 @@
 <?php
 
-$input_file = file_get_contents('./INPUT.txt');
-$abc = explode(" ", $input_file); //array of
+$InputFile = file_get_contents('./INPUT.txt');
+$abc = explode(" ", $InputFile); //array of
 $def = explode(" ", "+ + +"); //array of +/-
 
 $abc[-2] = 0;
@@ -11,7 +11,7 @@ $xy[0] = "";
 $xy[1] = "x";
 $xy[2] = "y";
 
-$equation = "";
+$Equation = "";
 
 for ($i = 0; $i <= 2; $i++) {
     if ($abc[$i] == 0) {
@@ -24,7 +24,7 @@ for ($i = 0; $i <= 2; $i++) {
         $def[$i] = "-";
         $abc[$i] = abs($abc[$i]);
     };
-    if (($equation == "") & ($abc[$i] > 0)) {
+    if (($Equation == "") & ($abc[$i] > 0)) {
         $def[$i] = "";
     };
 
@@ -33,14 +33,14 @@ for ($i = 0; $i <= 2; $i++) {
     };
 
 
-    $equation .= $def[$i] . $abc[$i] . $xy[$i];
+    $Equation .= $def[$i] . $abc[$i] . $xy[$i];
 };
 
 
-if ($equation == "") {
-    $equation = "0";
+if ($Equation == "") {
+    $Equation = "0";
 };
 
-echo $equation;
+echo $Equation;
 
 ?>
