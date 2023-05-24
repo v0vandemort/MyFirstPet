@@ -3,27 +3,26 @@
 session_start();
 
 if (isset($_POST["num"])) {
-    $num = $_POST["num"];
+    $Num = $_POST["num"];
 }
 
-$num16 = "";
+$Num16 = "";
 
-$sym16[10] = 'A';
-$sym16[11] = 'B';
-$sym16[12] = 'C';
-$sym16[13] = 'D';
-$sym16[14] = 'E';
-$sym16[15] = 'F';
+$Sym16[10] = 'A';
+$Sym16[11] = 'B';
+$Sym16[12] = 'C';
+$Sym16[13] = 'D';
+$Sym16[14] = 'E';
+$Sym16[15] = 'F';
 
-while ($num > 0) {
-    $symNew = $num % 16;
-    if ($symNew > 9) {
-        $symNew = $sym16[$symNew];
+while ($Num > 0) {
+    $SymNew = $Num % 16;
+    if ($SymNew > 9) {
+        $SymNew = $Sym16[$SymNew];
     }
-    $num16 = ($symNew) . $num16;
-    $num = ($num - $num % 16) / 16;
+    $Num16 = ($SymNew) . $Num16;
+    $Num = ($Num - $Num % 16) / 16;
 }
 
-$_SESSION["num16"] = $num16;
+$_SESSION["num16"] = $Num16;
 header("Location:/index.php");
-?>
