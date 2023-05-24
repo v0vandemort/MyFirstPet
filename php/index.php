@@ -32,7 +32,6 @@ for ($i = 0; $i <= 2; $i++) {
         $abc[$i] = "";
     };
 
-
     $Equation .= $def[$i] . $abc[$i] . $xy[$i];
 };
 
@@ -42,5 +41,3 @@ if ($Equation == "") {
 };
 
 echo $Equation;
-
-?>
