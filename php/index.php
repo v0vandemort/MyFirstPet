@@ -1,39 +1,39 @@
 <?php
 
-$fileInput = file_get_contents("Login.php");
-$firstSymbol = "{";
-$secondSymbol = "}";
+$FileInput = file_get_contents("Login.php");
+$FirstSymbol = "{";
+$SecondSymbol = "}";
 
-$fileStrLen = mb_strlen($fileInput);
+$FileStrLen = mb_strlen($FileInput);
 
-$checker = 0;
-$left = 0;    //left и right вводятся только для показа в конце. Их можно заменить одной переменной.
-$right = 0;   // тогда вместо $left++ и $right++ будут команды val++ val-- соответственно. вместо выражеения $left-$right будет использовано $val;
-for ($i = 0; $i + 1 <= $fileStrLen; $i++) {
-    if (mb_substr($fileInput, $i, 1) === $firstSymbol) {
-        $left++;
+$Checker = 0;
+$Left = 0;    //left и right вводятся только для показа в конце. Их можно заменить одной переменной.
+$Right = 0;   // тогда вместо $Left++ и $Right++ будут команды val++ val-- соответственно. вместо выражеения $Left-$Right будет использовано $val;
+for ($i = 0; $i + 1 <= $FileStrLen; $i++) {
+    if (mb_substr($FileInput, $i, 1) === $FirstSymbol) {
+        $Left++;
     };
-    if (mb_substr($fileInput, $i, 1) === $secondSymbol) {
-        $right++;
+    if (mb_substr($FileInput, $i, 1) === $SecondSymbol) {
+        $Right++;
     }
-    if (($left - $right) < 0) {
-        $checker++;
+    if (($Left - $Right) < 0) {
+        $Checker++;
     }
 }
 
-switch ($left - $right) {
+switch ($Left - $Right) {
     case 0:
-        if ($checker === 0) {
+        if ($Checker === 0) {
             echo "Code checked. '{' and '}' are settled in right position";
         } else {
             echo "ERROR Detected - '}' is settled before it's '{'";
         };
         break;
-    case ($left - $right) < 0:
+    case ($Left - $Right) < 0:
         echo "ERROR Detected - '}' doesn't have a pair";
         break;
-    case ($left - $right) > 0:
+    case ($Left - $Right) > 0:
         echo "ERROR Detected - '{' doesn't have a pair";
         break;
 }
-echo "<br>num of '{' - " . $left . ". <br> num of '}' - " . $right;
+echo "<br>num of '{' - " . $Left . ". <br> num of '}' - " . $Right;
