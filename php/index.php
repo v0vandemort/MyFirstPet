@@ -1,16 +1,16 @@
 <?php
 
-$fileInput = file_get_contents('./INPUT.txt');
+$FileInput = file_get_contents('./INPUT.txt');
 
-$fileString = explode(" ", $fileInput);
+$FileString = explode(" ", $FileInput);
 
 
-$arrayLength = count($fileString);
-$exitData = "";
-for ($i = 0; $i + 1 <= $arrayLength; $i++) {
-    if (mb_strlen($fileString[$i]) > 7) {
-        $fileString[$i] = mb_strimwidth($fileString[$i], 0, 7, "*");
+$ArrayLength = count($FileString);
+$ExitData = "";
+for ($i = 0; $i + 1 <= $ArrayLength; $i++) {
+    if (mb_strlen($FileString[$i]) > 7) {
+        $FileString[$i] = mb_strimwidth($FileString[$i], 0, 7, "*");
     };
-    $exitData .= $fileString[$i]." ";
+    $ExitData .= $FileString[$i]." ";
 };
-echo $exitData;
+echo $ExitData;
