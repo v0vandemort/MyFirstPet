@@ -1,66 +1,65 @@
 <?php
 
-$fileInput = file_get_contents("INPUT.txt");
-$holidays=explode(" ",$fileInput);
+$FileInput = file_get_contents("INPUT.txt");
+$Holidays=explode(" ",$FileInput);
 
-$today=getdate();
+$Today=getdate();
 
-while ($currentHoliday = current($holidays)) {
-    $array=explode("-",$currentHoliday);
-    $allHolidays[intval($array[0])][intval($array[1])]=1;
-    next($holidays);
+while ($CurrentHoliday = current($Holidays)) {
+    $Array=explode("-",$CurrentHoliday);
+    $AllHolidays[intval($Array[0])][intval($Array[1])]=1;
+    next($Holidays);
 }
 
-$maxMonthDay[1]=31;
-if (intval($today["year"])%4===0){
-    $maxMonthDay[2]=29;
+$MaxMonthDay[1]=31;
+if (intval($Today["year"])%4===0){
+    $MaxMonthDay[2]=29;
 } else  {
-    $maxMonthDay[2]=28;
+    $MaxMonthDay[2]=28;
 };
-$maxMonthDay[3]=31;
-$maxMonthDay[4]=30;
-$maxMonthDay[5]=31;
-$maxMonthDay[6]=30;
-$maxMonthDay[7]=31;
-$maxMonthDay[8]=31;
-$maxMonthDay[9]=30;
-$maxMonthDay[10]=31;
-$maxMonthDay[11]=30;
-$maxMonthDay[12]=31;
+$MaxMonthDay[3]=31;
+$MaxMonthDay[4]=30;
+$MaxMonthDay[5]=31;
+$MaxMonthDay[6]=30;
+$MaxMonthDay[7]=31;
+$MaxMonthDay[8]=31;
+$MaxMonthDay[9]=30;
+$MaxMonthDay[10]=31;
+$MaxMonthDay[11]=30;
+$MaxMonthDay[12]=31;
 
-$monthDateName[1]='января';
-$monthDateName[2]='февраля';
-$monthDateName[3]='марта';
-$monthDateName[4]='апреля';
-$monthDateName[5]='мая';
-$monthDateName[6]='июня';
-$monthDateName[7]='июля';
-$monthDateName[8]='августа';
-$monthDateName[9]='сентября';
-$monthDateName[10]='октября';
-$monthDateName[11]='ноября';
-$monthDateName[12]='декабря';
+$MonthDateName[1]='января';
+$MonthDateName[2]='февраля';
+$MonthDateName[3]='марта';
+$MonthDateName[4]='апреля';
+$MonthDateName[5]='мая';
+$MonthDateName[6]='июня';
+$MonthDateName[7]='июля';
+$MonthDateName[8]='августа';
+$MonthDateName[9]='сентября';
+$MonthDateName[10]='октября';
+$MonthDateName[11]='ноября';
+$MonthDateName[12]='декабря';
 
-$arrivalDate[0]=intval($today["mon"]);
-$arrivalDate[1]=intval($today["mday"]);
+$ArrivalDate[0]=intval($Today["mon"]);
+$ArrivalDate[1]=intval($Today["mday"]);
 
-if (intval($today["hours"])<20){
-    $arrivalDate[1]++;
+if (intval($Today["hours"])<20){
+    $ArrivalDate[1]++;
 }else{
-    $arrivalDate[1]+=2;
+    $ArrivalDate[1]+=2;
 }
 
-while ($allHolidays[$arrivalDate[0]][$arrivalDate[1]]===1){
-    $arrivalDate[1]=$arrivalDate[1]+1;//+day
-    if ($arrivalDate[1]>$maxMonthDay[$arrivalDate[0]]){
-        $arrivalDate[1]=$arrivalDate[1]-$maxMonthDay[$arrivalDate[0]];
-        $arrivalDate[0]++;
-        if ($arrivalDate[0]>12){
-            $arrivalDate[0]=$arrivalDate[0]-12;
+while ($AllHolidays[$ArrivalDate[0]][$ArrivalDate[1]]===1){
+    $ArrivalDate[1]=$ArrivalDate[1]+1;//+day
+    if ($ArrivalDate[1]>$MaxMonthDay[$ArrivalDate[0]]){
+        $ArrivalDate[1]=$ArrivalDate[1]-$MaxMonthDay[$ArrivalDate[0]];
+        $ArrivalDate[0]++;
+        if ($ArrivalDate[0]>12){
+            $ArrivalDate[0]=$ArrivalDate[0]-12;
         }
     }
 }
 
-$arrivalDate[2]="Дата ближайшей доставки ".$arrivalDate[1]." ".$monthDateName[$arrivalDate[0]];
-echo $arrivalDate[2];
-?>
+$ArrivalDate[2]="Дата ближайшей доставки ".$ArrivalDate[1]." ".$MonthDateName[$ArrivalDate[0]];
+echo $ArrivalDate[2];
