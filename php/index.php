@@ -14,6 +14,10 @@ foreach ($workDays as &$val){
     $val=explode(" ",$val);
     $val[0]=intval($val[0]);
     $val[1]=intval($val[1]);
+    if (!((1<=$val[0]) & ($val[0]<=$val[1]) & ($val[1]<=31))){
+        exit("Error in input data");
+
+    }
     if ($minDay<=$val[0]){
         $minDay=$val[0];
     };
