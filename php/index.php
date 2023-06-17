@@ -1,11 +1,9 @@
 <?php
 
-//phpinfo();
-
 try {
-    $pdo= new PDO ('pgsql:host=db;port=5432;dbname=cities;user=admin;password=example');
-} catch (PDOException $e ) {
-    echo ("Невозможно установить соединение с БД");
+    $pdo = new PDO ('pgsql:host=db;port=5432;dbname=cities;user=admin;password=example');
+} catch (PDOException $e) {
+    echo("Невозможно установить соединение с БД");
 }
 
 $fileInput = file_get_contents("tableconvert_csv_1x0a06 (1).csv");
@@ -25,50 +23,38 @@ foreach ($headerKeys as &$key) {
         }
     }
 }
+
 foreach ($fileData as $keyRow => &$row) {
     $row = explode(",", $row);
 }
-//
-//echo "<pre>";
-//print_r($fileHeaders);
-//echo "<pre>";
-//echo "<pre>";
-//print_r($headerKeys);
-//echo "<pre>";
-//
-//echo "<pre>";
-//print_r($fileData);
-//echo "<pre>";
 
 $query = "DROP DATABASE IF EXISTS cities";
-if ($pdo->exec($query)!==false){
+if ($pdo->exec($query) !== false) {
     echo "Таблица cities удалена<br>";
 }
 
-
-
-$query ="CREATE TABLE cities(
+$query = "CREATE TABLE cities(
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     lat REAL,
     lng REAL)";
-if ($pdo->exec($query)!==false){
+if ($pdo->exec($query) !== false) {
     echo "Таблица cities создана<br>";
 }
-$i=1;
-foreach ($fileData as $row =>$data){
-    if ($row === 0)
+
+foreach ($fileData as $row => $data) {
+    if ($row === 0) {
         continue;
-
-    $name=$data[$headerKeys["name"]];
-    $lat=$data[$headerKeys["lat"]];
-    $lng=$data[$headerKeys["lng"]];
-    echo $name."  ".$lat."   ".$lng."   <br><br>";
-    $query="INSERT INTO cities (name, lat, lng)
-            VALUES ('".$name."', '".$lat."', '".$lng."')";
-
-    if ($pdo->exec($query)!==false){
-        echo "Запись добавлена.<br>".$name."  ".$lat."   ".$lng."   <br><br>";
     }
-    $i++;
+
+    $name = $data[$headerKeys["name"]];
+    $lat = $data[$headerKeys["lat"]];
+    $lng = $data[$headerKeys["lng"]];
+    echo $name . "  " . $lat . "   " . $lng . "   <br><br>";
+    $query = "INSERT INTO cities (name, lat, lng)
+            VALUES ('" . $name . "', '" . $lat . "', '" . $lng . "')";
+
+    if ($pdo->exec($query) !== false) {
+        echo "Запись добавлена.<br>" . $name . "  " . $lat . "   " . $lng . "   <br><br>";
+    }
 }
