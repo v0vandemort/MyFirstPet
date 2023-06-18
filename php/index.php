@@ -1,3 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
 <?php
 
 try {
@@ -28,33 +38,52 @@ foreach ($fileData as $keyRow => &$row) {
     $row = explode(",", $row);
 }
 
-$query = "DROP DATABASE IF EXISTS cities";
+$query = "DROP DATABASE IF EXISTS db";
 if ($pdo->exec($query) !== false) {
     echo "Таблица cities удалена<br>";
 }
 
-$query = "CREATE TABLE cities(
+$query = "CREATE TABLE if NOT EXISTS cities(
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     lat REAL,
     lng REAL)";
 if ($pdo->exec($query) !== false) {
     echo "Таблица cities создана<br>";
-}
+    foreach ($fileData as $row => $data) {
+        if ($row === 0) {
+            continue;
+        }
 
-foreach ($fileData as $row => $data) {
-    if ($row === 0) {
-        continue;
-    }
-
-    $name = $data[$headerKeys["name"]];
-    $lat = $data[$headerKeys["lat"]];
-    $lng = $data[$headerKeys["lng"]];
-    echo $name . "  " . $lat . "   " . $lng . "   <br><br>";
-    $query = "INSERT INTO cities (name, lat, lng)
+        $name = $data[$headerKeys["name"]];
+        $lat = $data[$headerKeys["lat"]];
+        $lng = $data[$headerKeys["lng"]];
+//    echo $name . "  " . $lat . "   " . $lng . "   <br><br>";
+        $query = "INSERT INTO cities (name, lat, lng)
             VALUES ('" . $name . "', '" . $lat . "', '" . $lng . "')";
 
-    if ($pdo->exec($query) !== false) {
-        echo "Запись добавлена.<br>" . $name . "  " . $lat . "   " . $lng . "   <br><br>";
+        if ($pdo->exec($query) === 0) {
+            echo "Запись не добавлена.<br>" . $name . "  " . $lat . "   " . $lng . "   <br><br>";
+        }
+
+//    $pdo->exec($query) or
+//        $died++;
+//        echo " <br>".$name . " " . $lat . " " . $lng." <br>";
+//
+
     }
+
 }
+$died =0 ;
+
+
+
+echo "<br>Строк не добавлено в таблицу: ".$died."<br>";
+
+?>
+
+
+
+
+</body>
+</html>
