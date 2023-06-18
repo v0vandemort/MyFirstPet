@@ -72,17 +72,13 @@ if ($pdo->exec($query) !== false) {
 //
 
     }
-
 }
-$died =0 ;
+$died = 0;
 
 
-
-echo "<br>Строк не добавлено в таблицу: ".$died."<br>";
+echo "<br>Строк не добавлено в таблицу: " . $died . "<br>";
 
 ?>
-
-
 
 
 </body>
