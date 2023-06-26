@@ -1,14 +1,25 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
 <?php
+
+session_start();
+
+header(
+    'Content-Type: text/html; charset=UTF-8'
+); // Заголовок станицы с кодировкой (для корректного отображения в браузере)
+mb_internal_encoding('UTF-8'); // Установка внутренней кодировки в UTF-8
+mb_http_output('UTF-8'); // Установка кодировки UTF-8 входных данных HTTP-запроса
+mb_http_input('UTF-8'); // Установка кодировки UTF-8 выходных данных HTTP-запроса
+mb_regex_encoding('UTF-8'); // Установка кодировки UTF-8 для многобайтовых регулярных выражений
+
+function lastLetter($city)
+{
+    $letter = mb_substr($city, -1);
+    if (($letter === "ы") or ($letter === "ь") or ($letter === "ъ")) {
+        $city = mb_substr($city, 0, -1);
+        lastLetter($city);
+    };
+    return $letter;
+}
+
 
 $host = 'db';
 $port = '5432';
@@ -64,6 +75,11 @@ foreach ($fileData as $row => $data) {
 }
 
 //Sending data to PGSQL table
+$query = $pdo->prepare(
+    "Drop TABLE IF  EXISTS cities"
+);
+
+$query->execute();
 
 $query = $pdo->prepare(
     "CREATE TABLE IF NOT EXISTS cities(
@@ -92,11 +108,104 @@ foreach ($arrayCities as $row => $data) {
     }
 }
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//$query = $pdo->prepare(
+//    "Drop TABLE IF  EXISTS usedcities");
 
+$query->execute();
+
+$query = $pdo->prepare(
+    "CREATE TABLE IF NOT EXISTS usedcities(
+           id SERIAL PRIMARY KEY,
+           name TEXT NOT NULL,
+           UNIQUE (name))"
+);
+
+$query->execute();
 
 
 ?>
 
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Игра в города</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+</head>
+<body>
+<h1 align="center">Привет игрок!</h1>
 
+
+<form method="post">
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">
+            <?php
+            if (isset($_POST["city"])) {
+                //принимаем данные
+                $city = $_POST["city"];
+                $_SESSION["postCity"] = $city; //храним полученный город, пока не помещаем в playerCity, так ка может такого города нет
+                //-------------------------------
+                $query = $pdo->prepare("SELECT name FROM cities WHERE name=:name");
+                $query->execute(['name' => $city]);
+                $foundedCity = $query->fetch();
+
+                echo "<pre>";
+                print_r($foundedCity);
+                echo "</pre>";
+                if ($city === $foundedCity["name"]) {           ////подправить условие не видит данные с таблицы
+                    echo "Я знаю такой город<br>";
+                    $_SESSION['playerCity'] = $city; //город узнали, сохраняем как город игрока и отправляем в таблицу usedCities, проверку по этой таблице еще не добавлял
+                    $query = $pdo->prepare("INSERT INTO usedcities(name) VALUES (:name) ");
+                    $query->execute(['name' => $foundedCity["name"]]);
+                } else {
+                    $_SESSION["message"] = "Я не знаю такой город - " . $_SESSION["postCity"] . ". Попробуйте другой<br>";
+                    echo $_SESSION["message"];
+                    unset($_SESSION["message"]);
+                };
+                //-------------------------------
+
+            } else {
+                $_SESSION["message"] = "Данные не получены";
+                echo $_SESSION["message"];
+                unset($_SESSION["message"]);
+            };
+
+
+            if ($_SESSION['playerCity'] === $_SESSION["postCity"]) {
+                $query = $pdo->prepare(
+                    "SELECT * FROM cities where name like '" . mb_strtoupper(lastLetter($_SESSION['playerCity'])) . "%'"
+                );  /////// Вот тут проблема, нужно Исправить запрос, не может выбрать город много echo для debug
+                //$query->execute();
+                $foundedCity = $query->fetchAll(PDO::FETCH_ASSOC);
+
+                echo "'" . mb_strtoupper(lastLetter($_SESSION['playerCity'])) . "%'";
+                echo "<pre>";
+                print_r($foundedCity);
+                echo "</pre>";
+                foreach ($foundedCity as $book) {
+                    echo $book['name'] . '<br>';
+                }
+                $_SESSION['compCity'] = $foundedCity["name"];
+
+                echo "Ваш город - " . $_SESSION['playerCity'] . ". Мне на " . lastLetter(
+                        $_SESSION['playerCity']
+                    ) . ".<br> Мой ответ : " . $_SESSION['compCity'] . "<br>";
+            };
+
+
+            ?>
+
+            <input class="form-control" name="city"></label>
+        <div id="help" class="form-text">Введите город</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
 </body>
 </html>
