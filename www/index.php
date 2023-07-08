@@ -50,10 +50,10 @@ try {
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if (isset($_COOKIE['install'])) {
 
-    echo "<br>База уже установлена, города уже загружены<br>";
+    echo "<br>База nfr-nj уже установлена, города уже загружены<br>";
 } else {
     setcookie('install', time());
-    echo "<br>База  установлена, города  загружены<br>";
+    echo "<br>База nfr-nj установлена, города  загружены<br>";
 
     $query = $pdo->prepare(
         "CREATE TABLE IF NOT EXISTS cities(
@@ -146,7 +146,7 @@ if (isset($_COOKIE['install'])) {
             <?php
             if (isset($_POST["city"])) {
                 //принимаем данные
-                $city = mb_strtoupper(mb_substr($_POST["city"], 0, 1)) . mb_substr($_POST["city"], 1, null);
+                $city = index . phpmb_strtoupper(mb_substr($_POST["city"], 0, 1));
 
 
                 if (!($city === "")) {
