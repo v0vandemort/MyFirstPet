@@ -49,7 +49,6 @@ try {
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if (isset($_COOKIE['install'])) {
-
 //    echo "<br>База уже установлена, города уже загружены<br>";
 } else {
     setcookie('install', time());
@@ -134,7 +133,30 @@ if (isset($_COOKIE['install'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Игра в города</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+           crossorigin="anonymous">
+<!--    <script type="text/javascript">-->
+<!--        $('.city').submit(function (e) {-->
+<!--            e.preventDefault();-->
+<!--            let th = $(this);-->
+<!--            let mess = $('.mess');-->
+<!--            let btn = th.find('.btn');-->
+<!--            btn.addClass('progress-bar-striped progress-bar-animated')-->
+<!---->
+<!--            $.ajax({-->
+<!---->
+<!--                type: 'POST',-->
+<!--                data:th.serialize(),-->
+<!--                success:function () {-->
+<!--                btn.removeClass('progress-bar-striped progress-bar-animated');-->
+<!--                mess.html('<div class="alert alert-success">Город принят, проверяем</div>');-->
+<!--            },error: function () {-->
+<!--                mess.html('<div class="alert alert-success">Ошибка отправки</div>');-->
+<!--                btn.removeClass('progress-bar-striped progress-bar-animated');-->
+<!--            }-->
+<!---->
+<!--        })-->
+<!--        }-->
+<!--    </script>-->
 </head>
 <body>
 <br>
@@ -154,13 +176,13 @@ if (isset($_COOKIE['install'])) {
 
         </div>
         <div class="col">
-            <form align="center" method="post">
+            <form id="cityPaste" class="city" onsubmit="sendRequest(event)" align="center" method="post">
                 <div class="mb-3">
                     <label align="center" for="exampleInputEmail1" class="form-label">
                         <?php
                         if (isset($_POST["city"])) {
                             //принимаем данные
-                            $city = mb_strtoupper(mb_substr($_POST["city"], 0, 1)).mb_substr($_POST["city"], 1);
+                            $city = mb_strtoupper(mb_substr($_POST["city"], 0, 1)) . mb_substr($_POST["city"], 1);
 
 
                             if (!($city === "")) {
@@ -188,7 +210,9 @@ if (isset($_COOKIE['install'])) {
                                         $usedCheck = $query->fetch();
 
                                         if (!empty($usedCheck)) {
-                                            echo "<br>Город уже был, попробуйте другой. Вам на " . lastLetter($_SESSION['compCity']);
+                                            echo "<br>Город уже был, попробуйте другой. Вам на " . lastLetter(
+                                                    $_SESSION['compCity']
+                                                );
                                         } else {
                                             $_SESSION['playerCity'] = $city; //город узнали, сохраняем как город игрока и отправляем в таблицу usedCities
                                             $query = $pdo->prepare("INSERT INTO usedcities(name) VALUES (:name) ");
@@ -201,21 +225,24 @@ if (isset($_COOKIE['install'])) {
                                                     ) . "%'"
                                                 );
                                                 $query->execute();
-                                                $foundedCity = $query->fetchAll(PDO::FETCH_ASSOC); //достаем все города на нужную букву
+                                                $foundedCity = $query->fetchAll(
+                                                    PDO::FETCH_ASSOC
+                                                ); //достаем все города на нужную букву
 
                                                 $i = -1;
                                                 do {
                                                     $i++;
-                                                    $query = $pdo->prepare("SELECT name FROM usedCities WHERE name=:name");  //ищем первый подходящий город в базе использованных
+                                                    $query = $pdo->prepare(
+                                                        "SELECT name FROM usedCities WHERE name=:name"
+                                                    );  //ищем первый подходящий город в базе использованных
                                                     $query->execute(['name' => $foundedCity[$i]['name']]);
                                                     $usedCity = $query->fetch();
                                                     if (empty($foundedCity[$i])) {
                                                         echo "Game over. You win. Last city -" . $_SESSION['playerCity'];
-                                                        $_SESSION['gameOver']=true;
+                                                        $_SESSION['gameOver'] = true;
                                                         break;
                                                     };
                                                 } while (($foundedCity[$i]['name'] === $usedCity['name']));
-
 
 
 //                                                while (($foundedCity[$i]['name'] === $usedCity['name'])) { //пока он есть в базе, меняем города, через i++
@@ -232,14 +259,16 @@ if (isset($_COOKIE['install'])) {
 //
 //                                                };
                                                 //
-                                                if (!$_SESSION['gameOver']){
+                                                if (!$_SESSION['gameOver']) {
                                                     $_SESSION['compCity'] = $foundedCity[$i]['name'];
                                                     //                            echo "'" . mb_strtoupper(lastLetter($_SESSION['playerCity'])) . "%'";
                                                     //                            echo "<pre>";
                                                     //                            print_r($foundedCity);
                                                     //                            echo "</pre>";
                                                     $_SESSION['compCity'] = $foundedCity[$i]["name"];
-                                                    $query = $pdo->prepare("INSERT INTO usedcities(name) VALUES (:name) ");
+                                                    $query = $pdo->prepare(
+                                                        "INSERT INTO usedcities(name) VALUES (:name) "
+                                                    );
                                                     $query->execute(['name' => $_SESSION['compCity']]);
 
 
@@ -253,7 +282,9 @@ if (isset($_COOKIE['install'])) {
 
 
                                                     $i = 0;
-                                                    $query = $pdo->prepare("SELECT name FROM usedCities WHERE name=:name");
+                                                    $query = $pdo->prepare(
+                                                        "SELECT name FROM usedCities WHERE name=:name"
+                                                    );
                                                     $query->execute(['name' => $foundedCity[$i]['name']]);
                                                     $usedCity = $query->fetch();
 
@@ -262,15 +293,15 @@ if (isset($_COOKIE['install'])) {
                                                     //
                                                     while ($foundedCity[$i]['name'] === $usedCity['name']) {
                                                         $i++;
-                                                        $query = $pdo->prepare("SELECT name FROM cities WHERE name=:name");
+                                                        $query = $pdo->prepare(
+                                                            "SELECT name FROM cities WHERE name=:name"
+                                                        );
                                                         $query->execute(['name' => $foundedCity[$i]['name']]);
                                                         $usedCity = $query->fetchAll();
                                                         if (empty($foundedCity[$i])) {
-
-                                                            $_SESSION['gameOver']=true;
+                                                            $_SESSION['gameOver'] = true;
                                                             break;
                                                         };
-
                                                     };
 
 
@@ -285,21 +316,9 @@ if (isset($_COOKIE['install'])) {
                                                                 lastLetter($_SESSION['playerCity'])
                                                             ) . "'" . ".<br> Мой ответ : " . $_SESSION['compCity'] . "<br>" . "But game over. Computer win. Last city - " . $_SESSION['compCity'];
                                                     }
-
                                                 }
-
-
-
                                             };
-
-
                                         };
-
-
-
-
-
-
                                     } else {
                                         $_SESSION["message"] = "Я не знаю такой город - " . $_SESSION["postCity"] . ". Попробуйте другой<br>";
                                         echo($_SESSION["message"]);
@@ -308,7 +327,9 @@ if (isset($_COOKIE['install'])) {
                                     //-------------------------------
 
                                 } else {
-                                    echo "<br>Неверная буква. Попробуйте снова. Вам нужна " . lastLetter($_SESSION['compCity']);
+                                    echo "<br>Неверная буква. Попробуйте снова. Вам нужна " . lastLetter(
+                                            $_SESSION['compCity']
+                                        );
                                 }
                             } else {
                                 $_SESSION["message"] = "Введите название города";
@@ -326,7 +347,7 @@ if (isset($_COOKIE['install'])) {
                 <button type="submit" class="btn btn-primary">Отправить</button>
             </form>
         </div>
-        <div class="col" align="center">
+        <div class="col" align="center" class="mess">
             LOGS
             <br>
             <?php
@@ -335,11 +356,10 @@ if (isset($_COOKIE['install'])) {
             $logs = $query->fetchAll();
 
             if (!empty($logs)) {
-                $logs=array_reverse($logs);
-                foreach ($logs as $log){
-                    echo $log['name']."<br>";
+                $logs = array_reverse($logs);
+                foreach ($logs as $log) {
+                    echo $log['name'] . "<br>";
                 };
-
             };
 
 
@@ -349,10 +369,34 @@ if (isset($_COOKIE['install'])) {
 </div>
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
 
+<script type="text/javascript">
+    function sendRequest(event){
+        event.preventDefault(); //отключаем стандартное действие
+        let th = $(event.target);
+        let mess = $('.mess');
+        let btn = th.find('.btn');
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
-        crossorigin="anonymous"></script>
+        $.ajax({
+           type:'POST',
+           data:th.serialize(),
+            success: function () {
+                btn.removeClass('progress-bar-striped progress-bar-animated');
+                mess.html('<div class="alert alert-success">Город принят, проверяем</div>');
+                document.getElementById("cityPaste").reset();
+            },
+            error: function () {
+                mess.html('<div class="alert alert-success">Ошибка отправки</div>');
+                btn.removeClass('progress-bar-striped progress-bar-animated');
+            }
+
+        });
+
+    }
+</script>
 </body>
 </html>
+
+
+//// 23/07 - аякс чудом заработал, нужно теперь добавить его для сопровождающего текста и для логов
