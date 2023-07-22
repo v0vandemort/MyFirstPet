@@ -140,7 +140,7 @@ if (isset($_COOKIE['install'])) {
 <br>
 <br>
 <br>
-<h1 align="center">Привет игрок!</h1>
+<h1 align="center">Привет, игрок!</h1>
 
 <br>
 <br>
@@ -190,40 +190,47 @@ if (isset($_COOKIE['install'])) {
                                         if (!empty($usedCheck)) {
                                             echo "<br>Город уже был, попробуйте другой. Вам на " . lastLetter($_SESSION['compCity']);
                                         } else {
-                                            $_SESSION['playerCity'] = $city; //город узнали, сохраняем как город игрока и отправляем в таблицу usedCities, проверку по этой таблице еще не добавлял
+                                            $_SESSION['playerCity'] = $city; //город узнали, сохраняем как город игрока и отправляем в таблицу usedCities
                                             $query = $pdo->prepare("INSERT INTO usedcities(name) VALUES (:name) ");
                                             $query->execute(['name' => $city]);
 
-                                            if ($_SESSION['playerCity'] === $_SESSION["postCity"]) {
+                                            if ($_SESSION['playerCity'] === $_SESSION["postCity"]) {  //Проверка очередности хода если город последний удачный и последний названный одинаковы,то ход компьютера
                                                 $query = $pdo->prepare(
                                                     "SELECT * FROM cities where name like '" . mb_strtoupper(
                                                         lastLetter($_SESSION['playerCity'])
                                                     ) . "%'"
-                                                );  /////// Вот тут проблема, нужно Исправить запрос, не может выбрать город много echo для debug
+                                                );
                                                 $query->execute();
-                                                $foundedCity = $query->fetchAll(PDO::FETCH_ASSOC);
+                                                $foundedCity = $query->fetchAll(PDO::FETCH_ASSOC); //достаем все города на нужную букву
 
-
-                                                $i = 0;
-                                                $query = $pdo->prepare("SELECT name FROM usedCities WHERE name=:name");
-                                                $query->execute(['name' => $foundedCity[$i]['name']]);
-                                                $usedCity = $query->fetch();
-
-                                                //var_dump($usedCity);
-                                                //    echo "<br>" . "<br>" . "<br>" . "<br>" . $foundedCity[$i]['name'] . "<br>" . "<br>" . "<br>" . "<br>" . "<br>";
-                                                //
-                                                while ($foundedCity[$i]['name'] === $usedCity['name']) {
+                                                $i = -1;
+                                                do {
                                                     $i++;
-                                                    $query = $pdo->prepare("SELECT name FROM cities WHERE name=:name");
+                                                    $query = $pdo->prepare("SELECT name FROM usedCities WHERE name=:name");  //ищем первый подходящий город в базе использованных
                                                     $query->execute(['name' => $foundedCity[$i]['name']]);
-                                                    $usedCity = $query->fetchAll();
+                                                    $usedCity = $query->fetch();
                                                     if (empty($foundedCity[$i])) {
                                                         echo "Game over. You win. Last city -" . $_SESSION['playerCity'];
                                                         $_SESSION['gameOver']=true;
                                                         break;
                                                     };
+                                                } while (($foundedCity[$i]['name'] === $usedCity['name']));
 
-                                                };
+
+
+//                                                while (($foundedCity[$i]['name'] === $usedCity['name'])) { //пока он есть в базе, меняем города, через i++
+//                                                    $i++;
+//                                                    $query = $pdo->prepare("SELECT name FROM usedCities WHERE name=:name");
+//                                                    $query->execute(['name' => $foundedCity[$i]['name']]);
+//                                                    $usedCity = $query->fetch();
+//
+//                                                    if (empty($foundedCity[$i])) {
+//                                                        echo "Game over. You win. Last city -" . $_SESSION['playerCity'];
+//                                                        $_SESSION['gameOver']=true;
+//                                                        break;
+//                                                    };
+//
+//                                                };
                                                 //
                                                 if (!$_SESSION['gameOver']){
                                                     $_SESSION['compCity'] = $foundedCity[$i]['name'];
