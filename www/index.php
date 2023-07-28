@@ -178,14 +178,14 @@ if (isset($_COOKIE['install'])) {
         <div class="col">
             <form id="cityPaste" class="city" onsubmit="sendRequest(event)" align="center" method="post">
                 <div class="mb-3">
-                    <label align="center" for="exampleInputEmail1" class="form-label">
+                    <label id="formForCity" align="center" for="exampleInputEmail1" class="form-label">
                         <?php
                         if (isset($_POST["city"])) {
                             //принимаем данные
                             $city = mb_strtoupper(mb_substr($_POST["city"], 0, 1)) . mb_substr($_POST["city"], 1);
 
 
-                            if (!($city === "")) {
+                            if (!($city === "")) { //если полученное не пустая строка
                                 $_SESSION["postCity"] = $city; //храним полученный город, пока не помещаем в playerCity, так ка может такого города нет
                                 //-------------------------------
                                 echo "<br>Проверяю ваш город. <br>";
@@ -347,7 +347,7 @@ if (isset($_COOKIE['install'])) {
                 <button type="submit" class="btn btn-primary">Отправить</button>
             </form>
         </div>
-        <div class="col" align="center" class="mess">
+        <div class="col" align="center" class="logs">
             LOGS
             <br>
             <?php
@@ -373,18 +373,31 @@ if (isset($_COOKIE['install'])) {
 
 <script type="text/javascript">
     function sendRequest(event){
-        event.preventDefault(); //отключаем стандартное действие
+        event.preventDefault(); //отключаем стандартное действие-->
         let th = $(event.target);
-        let mess = $('.mess');
-        let btn = th.find('.btn');
+        let mess = $('.logs');
+        let btn = th.find('.btn'); //работа кнопки
 
         $.ajax({
            type:'POST',
            data:th.serialize(),
             success: function () {
                 btn.removeClass('progress-bar-striped progress-bar-animated');
-                mess.html('<div class="alert alert-success">Город принят, проверяем</div>');
-                document.getElementById("cityPaste").reset();
+                logs.html('<div class="alert alert-success">Город принят, проверяем  <?php
+                    $query = $pdo->prepare("SELECT * FROM usedCities");
+                    $query->execute();
+                    $logs = $query->fetchAll();
+
+                    if (!empty($logs)) {
+                        $logs = array_reverse($logs);
+                        foreach ($logs as $log) {
+                            echo $log['name'] . "<br>";
+                        };
+                    };
+
+
+                    ?></div>');
+                document.getElementById("formForCity").reset();
             },
             error: function () {
                 mess.html('<div class="alert alert-success">Ошибка отправки</div>');
@@ -398,5 +411,3 @@ if (isset($_COOKIE['install'])) {
 </body>
 </html>
 
-
-//// 23/07 - аякс чудом заработал, нужно теперь добавить его для сопровождающего текста и для логов
