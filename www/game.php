@@ -37,8 +37,8 @@ function lastLetter($city)
     };
     return $letter;
 }
-$dialogueData = "Doesnt set";
-$divData = array();
+$dialogueMess = "Doesnt set";
+$logData = "";
 if (isset($_POST["city"])) {
     //принимаем данные
     $city = mb_strtoupper(mb_substr($_POST["city"], 0, 1)) . mb_substr($_POST["city"], 1);
@@ -186,9 +186,9 @@ if (isset($_POST["city"])) {
             //-------------------------------
 
         } else {
-            $dialogueMess .= "<br>Неверная буква. Попробуйте снова. Вам нужна " . lastLetter(
+            $dialogueMess .= "<br>Неверная буква. Попробуйте снова. Вам нужна '" . mb_strtoupper(lastLetter(
                     $_SESSION['compCity']
-                );
+                ))."'";
         }
     } else {
         $_SESSION["message"] = "Введите название города";
@@ -201,14 +201,17 @@ if (isset($_POST["city"])) {
 $query = $pdo->prepare("SELECT * FROM usedCities");
 $query->execute();
 $logs = $query->fetchAll();
-
 if (!empty($logs)) {
     $logs = array_reverse($logs);
     foreach ($logs as $log) {
-        $divData ['name'] = $log['name'];
+        $logData .= $log['name']."<br>";
     };
 };
-
+$dialogueData=$dialogueMess;
 header('Content-Type: application/json');
-echo json_encode(array("dialogue" => $dialogueData, "div" => $divData));
+$response = array(
+    'dialogueString' => $dialogueData,
+    'log' => $logData,
+);
+echo json_encode($response);
 ?>

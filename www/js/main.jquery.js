@@ -117,45 +117,67 @@
 // });
 
 
-function logs()
-{
-    $logs = find('div h7');
+function logs(response) {
+    $('div h7').html(response+"<br>");
 }
 
-function dialogue()
-{
-    $(request.data).find('h7[class=dialogue]')
-
+function dialogue(response) {
+    // Выводим полученные данные на страницу
+    $('h6').html(response);
 }
-function resetForm()
-{
+
+function resetForm() {
     $('#cityPaste')[0].reset();
 }
 
-$("#btnSubmit").click(function() {
+$("#btnSubmit").click(function(e) {
     // Получение текста из текстового поля
-    var text = $("#cityInput").val();
+    e.preventDefault();
+    var text = $("#cityInput").val(); //переменная для ссылки на форму с текстом, чтоб использовать в ajax: data
 
     // Отправка текста на сервер с помощью AJAX
     $.ajax({
         url: "../game.php", // Путь к вашему файлу game.php
         method: "POST", // Используем метод POST
-        data: { text: text }, // Отправляем текст в виде параметра
+        data: { city: text }, // Отправляем текст в виде параметра с именем "city"
         dataType: "json", // Ожидаем ответ в формате JSON
         success: function(response) {
             // Обработка успешного ответа
-            // Выводим полученные данные на страницу
-            $(".dialogue-container").text(JSON.stringify(response));
+            // Вызываем функции для обработки данных
+            dialogue(response['dialogueString']);
+            logs(response['log']);
+            resetForm();
         },
         error: function(jqXHR, textStatus, errorThrown) {
             // Обработка ошибки
             // Выводим сообщение об ошибке
             $("#result").text("Ошибка: " + textStatus + " " + errorThrown);
         }
-
-
-
     });
-    // $('div h7').html(responce.div);
-    // $('h7[class=dialogue]').html(responce.dialogue);
+});
+
+
+
+$("#btnRestart").click(function(e) {
+    // Получение текста из текстового поля
+
+    // Отправка текста на сервер с помощью AJAX
+    $.ajax({
+        url: "../game.php", // Путь к вашему файлу game.php
+        method: "POST", // Используем метод POST
+        data: { city: text }, // Отправляем текст в виде параметра с именем "city"
+        dataType: "json", // Ожидаем ответ в формате JSON
+        success: function(response) {
+            // Обработка успешного ответа
+            // Вызываем функции для обработки данных
+            dialogue(response['dialogueString']);
+            logs(response['log']);
+            resetForm();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Обработка ошибки
+            // Выводим сообщение об ошибке
+            $("#result").text("Ошибка: " + textStatus + " " + errorThrown);
+        }
+    });
 });

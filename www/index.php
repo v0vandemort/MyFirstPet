@@ -180,7 +180,7 @@ if (isset($_COOKIE['install'])) {
             <form id="cityPaste" class="city" onsubmit="subForm(city)" align="center" method="post">
                 <div class="mb-3">
                     <label id="formForCity" align="center" for="exampleInputEmail1" class="form-label">
-                        <h7 class="dialogue-container">
+                        <h6 class="dialogue-container">
 <!--                            --><?php
 //                        if (isset($_POST["city"])) {
 //                            //принимаем данные
@@ -342,18 +342,27 @@ if (isset($_COOKIE['install'])) {
 //
 //
 //                        ?>
-                        </h7>
+                        </h6>
 
                         <input class="form-control" name="city" id="cityInput"></label>
                     <div id="help" class="form-text">Введите город</div>
                 </div>
                 <button type="submit" class="btn btn-primary" id="btnSubmit">Отправить</button>
+
+
             </form>
+            <br>
+            <form action="restart.php">
+                <button type="restart" class="btn btn-primary" id="btnRestart">Начать игру заново</button>
+            </form>
+
+
         </div>
+
         <div class="col" align="center">
             <h4>LOGS</h4>
             <br>
-            <div class="div-container"><h7>
+            <div class="log-container"><h7>
 <!--                --><?php
 //                $query = $pdo->prepare("SELECT * FROM usedCities");
 //                $query->execute();
@@ -385,6 +394,3 @@ if (isset($_COOKIE['install'])) {
 </html>
 
 
-https://www.youtube.com/watch?v=9Pqf_AIT2ZI 50-29
-
-ajax работает, нужно изучить подробнее как
