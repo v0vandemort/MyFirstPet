@@ -60,7 +60,17 @@ if (isset($_COOKIE['install'])) {
            name TEXT NOT NULL,
            lat REAL,
            lng REAL,
+           regionId int, 
            UNIQUE (name, lat, lng))"
+    );
+
+    $query->execute();
+
+    $query = $pdo->prepare(
+        "CREATE TABLE IF NOT EXISTS regions(
+           id SERIAL PRIMARY KEY,
+           name TEXT NOT NULL,
+           UNIQUE (name))"
     );
 
     $query->execute();
@@ -85,9 +95,10 @@ if (isset($_COOKIE['install'])) {
     $headerKeys["name"] = "Город";
     $headerKeys["lat"] = "Широта";
     $headerKeys["lng"] = "Долгота";
+    $headerKeys["regionName"] = "Регион";
 
     foreach ($headerKeys as &$key) {
-        foreach ($fileHeaders as $keyHeader => &$header) {
+        foreach ($fileHeaders as $keyHeader => $header) {
             if (($key === $header)) {
                 $key = $keyHeader;
             }
@@ -105,8 +116,22 @@ if (isset($_COOKIE['install'])) {
         $arrayCities[$row][0] = $data[$headerKeys["name"]];
         $arrayCities[$row][1] = $data[$headerKeys["lat"]];
         $arrayCities[$row][2] = $data[$headerKeys["lng"]];
+        $arrayCities[$row][3] = $data[$headerKeys["regionName"]];
+
+        $query = $pdo->prepare("INSERT INTO regions (name) VALUES (:name) ");
+        $query->execute(array('name' => $arrayCities[$row][3]));
+
+        $query = $pdo->prepare("SELECT * FROM regions WHERE name=:name");
+        $query->execute(['name' =>$arrayCities[$row][3]]);
+        $foundedCity = $query->fetchAll();
+
+        $arrayCities[$row][3] = $foundedCity [0][0];
+
     }
 
+    echo "<pre>";
+    print_r($arrayCities);
+    echo "</pre>";
     foreach ($arrayCities as $row => $data) {
         if ($row === 0) {
             continue;
@@ -115,8 +140,9 @@ if (isset($_COOKIE['install'])) {
         $name = $data[0];
         $lat = $data[1];
         $lng = $data[2];
-        $dataString = array('name' => $name, 'lat' => $lat, 'lng' => $lng);
-        $query = $pdo->prepare("INSERT INTO cities (name, lat, lng) VALUES (:name, :lat, :lng) ");
+        $regionId = $data[3];
+        $dataString = array('name' => $name, 'lat' => $lat, 'lng' => $lng,'regionId' => $regionId);
+        $query = $pdo->prepare("INSERT INTO cities (name, lat, lng, regionId) VALUES (:name, :lat, :lng, :regionId) ");
         $query->execute($dataString);
         if ($query->execute($dataString) !== false) {
             echo "<br>Запись не добавлена  <br><br>";
